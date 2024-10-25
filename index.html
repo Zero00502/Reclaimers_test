@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Data Display</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        .data-box {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+<h1>MQTT Data Display</h1>
+<div id="deviceInfo" class="data-box">
+    <h2>Device Information</h2>
+    <p id="deviceId"></p>
+    <p id="applicationId"></p>
+    <p id="devEUI"></p>
+</div>
+<div id="uplinkMessage" class="data-box">
+    <h2>Uplink Message</h2>
+    <p id="message"></p>
+    <p id="fPort"></p>
+</div>
+<div id="metadata" class="data-box">
+    <h2>Metadata</h2>
+    <p id="rxMetadata"></p>
+</div>
+<div id="locationData" class="data-box">
+    <h2>Location Data</h2>
+    <p id="latitude"></p>
+    <p id="longitude"></p>
+    <p id="altitude"></p>
+</div>
+
+<script>
+    const socket = io();
+
+    socket.on('mqttData', (data) => {
+        const parsedData = JSON.parse(data);
+
+        // Device Information
+        document.getElementById('deviceId').textContent = `Device ID: ${parsedData.end_device_ids.device_id}`;
+        document.getElementById('applicationId').textContent = `Application ID: ${parsedData.end_device_ids.application_ids.application_id}`;
+        document.getElementById('devEUI').textContent = `Device EUI: ${parsedData.end_device_ids.dev_eui}`;
+
+        // Uplink Message
+        const uplinkMessage = parsedData.uplink_message.decoded_payload.message;
+        document.getElementById('message').textContent = `Message: ${uplinkMessage}`;
+        document.getElementById('fPort').textContent = `F-Port: ${parsedData.uplink_message.f_port}`;
+
+        // Metadata
+        const rxMetadata = parsedData.uplink_message.rx_metadata.map((metadata) => {
+            return `Gateway ID: ${metadata.gateway_ids.gateway_id}, RSSI: ${metadata.rssi}, SNR: ${metadata.snr}`;
+        }).join('; ');
+        document.getElementById('rxMetadata').textContent = `Received Metadata: ${rxMetadata}`;
+
+        // Location Data
+        const location = parsedData.uplink_message.locations['frm-payload'];
+        document.getElementById('latitude').textContent = `Latitude: ${location.latitude}`;
+        document.getElementById('longitude').textContent = `Longitude: ${location.longitude}`;
+        document.getElementById('altitude').textContent = `Altitude: ${location.altitude}`;
+    });
+</script>
+</body>
+</html>
