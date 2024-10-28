@@ -4,70 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MQTT Data Display</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <script src="/socket.io/socket.io.js"></script>
-    <style>
-        .data-box {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #f9f9f9;
-        }
-        h2 {
-            font-size: 1.2em;
-        }
-    </style>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 <body>
 <h1>MQTT Data Display</h1>
 <div id="deviceInfo" class="data-box">
     <h2>Device Information</h2>
-    <p id="deviceId"></p>
-    <p id="applicationId"></p>
-    <p id="devEUI"></p>
+    <p id="deviceId">Loading...</p>
+    <p id="applicationId">Loading...</p>
+    <p id="devEUI">Loading...</p>
 </div>
 <div id="uplinkMessage" class="data-box">
     <h2>Uplink Message</h2>
-    <p id="message"></p>
-    <p id="fPort"></p>
+    <p id="message">Loading...</p>
+    <p id="fPort">Loading...</p>
 </div>
 <div id="metadata" class="data-box">
     <h2>Metadata</h2>
-    <p id="rxMetadata"></p>
+    <p id="rxMetadata">Loading...</p>
 </div>
 <div id="locationData" class="data-box">
     <h2>Location Data</h2>
-    <p id="latitude"></p>
-    <p id="longitude"></p>
-    <p id="altitude"></p>
+    <p id="latitude">Loading...</p>
+    <p id="longitude">Loading...</p>
+    <p id="altitude">Loading...</p>
 </div>
+<div id="map"></div>
 
 <script>
+    const map = L.map('map').setView([48.368044, 14.512778], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    let marker;
+
     const socket = io();
 
     socket.on('mqttData', (data) => {
+        const socket = io();
+        socket.on('mqttData', (data) => {
+            console.log("Received MQTT Data:", data);  // Logs received data to console
+        });
+
         const parsedData = JSON.parse(data);
 
-        // Device Information
         document.getElementById('deviceId').textContent = `Device ID: ${parsedData.end_device_ids.device_id}`;
         document.getElementById('applicationId').textContent = `Application ID: ${parsedData.end_device_ids.application_ids.application_id}`;
         document.getElementById('devEUI').textContent = `Device EUI: ${parsedData.end_device_ids.dev_eui}`;
 
-        // Uplink Message
         const uplinkMessage = parsedData.uplink_message.decoded_payload.message;
         document.getElementById('message').textContent = `Message: ${uplinkMessage}`;
         document.getElementById('fPort').textContent = `F-Port: ${parsedData.uplink_message.f_port}`;
 
-        // Metadata
         const rxMetadata = parsedData.uplink_message.rx_metadata.map((metadata) => {
             return `Gateway ID: ${metadata.gateway_ids.gateway_id}, RSSI: ${metadata.rssi}, SNR: ${metadata.snr}`;
         }).join('; ');
         document.getElementById('rxMetadata').textContent = `Received Metadata: ${rxMetadata}`;
 
-        // Location Data
         const location = parsedData.uplink_message.locations['frm-payload'];
-        document.getElementById('latitude').textContent = `Latitude: ${location.latitude}`;
-        document.getElementById('longitude').textContent = `Longitude: ${location.longitude}`;
-        document.getElementById('altitude').textContent = `Altitude: ${location.altitude}`;
+        const latitude = location.latitude;
+        const longitude = location.longitude;
+        const altitude = location.altitude;
+        document.getElementById('latitude').textContent = `Latitude: ${latitude}`;
+        document.getElementById('longitude').textContent = `Longitude: ${longitude}`;
+        document.getElementById('altitude').textContent = `Altitude: ${altitude}`;
+
+        if (marker) {
+            marker.setLatLng([latitude, longitude]);
+        } else {
+            marker = L.marker([latitude, longitude]).addTo(map);
+        }
+        map.setView([latitude, longitude], 13);
     });
 </script>
 </body>

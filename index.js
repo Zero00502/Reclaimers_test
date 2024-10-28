@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const mqtt = require('mqtt');
+const path = require('path');
+
 
 // MQTT setup
 const host = 'eu1.cloud.thethings.network';
@@ -25,10 +27,15 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve the main HTML file
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// MQTT event handling
 client.on('connect', () => {
     console.log('Connected to MQTT broker');
     client.subscribe([topic], () => {

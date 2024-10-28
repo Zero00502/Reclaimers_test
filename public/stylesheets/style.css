@@ -1,8 +1,29 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+h1 {
+    text-align: center;
+}
+
+.data-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    width: 90%;
+    max-width: 600px;
+    margin: 10px auto;
+}
+
+h2 {
+    font-size: 1.2em;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    margin: 20px auto;
+    max-width: 600px;
+    border: 1px solid #ddd;
 }
