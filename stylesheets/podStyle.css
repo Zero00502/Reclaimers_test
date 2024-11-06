@@ -1,0 +1,13 @@
+.search-bar {
+    max-width: 400px;
+    margin: 20px auto;
+}
+.table-container {
+    margin-top: 20px;
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}

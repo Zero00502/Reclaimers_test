@@ -8,45 +8,130 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-DyZvLhM3rZFl+VmM0Nps92lEYeQV7HRpX2GlBlE2MDFKGeDsqFDu3scde0cCpV6x" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./stylesheets/style.css" />
+    <link rel="stylesheet" type="text/css" href="./stylesheets/frontStyle.css" />
 </head>
 <body>
-<h1>MQTT Data Display</h1>
+    <header class="bg-secondary text-black py-3 d-flex justify-content-between align-items-center">
+        <i id="sidebarOpen" class="fa-solid fa-bars fa-3x ml-104"></i>
+        <h1 class="m-0 mx-auto">TheReclaimers</h1>
+        <i class="far fa-user fa-3x ms-auto mr-5"></i>
+    </header>
 
-<div id="locationData" class="data-box">
-    <h2>Location Data</h2>
-    <p id="latitude">Loading...</p>
-    <p id="longitude">Loading...</p>
-    <p id="altitude">Loading...</p>
-</div>
-<div id="TempData" class="data-box">
-    <h2>Location Data</h2>
-    <p id="latitude">Loading...</p>
-    <p id="longitude">Loading...</p>
-    <p id="altitude">Loading...</p>
-</div>
-<div id="DTSData" class="data-box">
-    <h2>Location Data</h2>
-    <p id="latitude">Loading...</p>
-    <p id="longitude">Loading...</p>
-    <p id="altitude">Loading...</p>
-</div>
-<div id="PHData" class="data-box">
-    <h2>Location Data</h2>
-    <p id="latitude">Loading...</p>
-    <p id="longitude">Loading...</p>
-    <p id="altitude">Loading...</p>
-</div>
+    <div class="sidebar shadow" id="sidebarMenu">
+        <div class="sidebar-header py-3 bg-secondary">
+            <i id="sidebarClose" class="fa-solid fa-bars fa-3x text-black"></i>
+        </div>
+        <a href="./index.html" class="sidebar-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="sidebar-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Analytics</span>
+        </a>
+        <a href="#" class="sidebar-item">
+            <i class="fa-solid fa-wave-square"></i>
+            <span>Predictions</span>
+        </a>
+        <a href="./pod.html" class="sidebar-item">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>Pod Information</span>
+        </a>
+    </div>
 
-<div id="map"></div>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-3 card px-0 shadow">
+                <div class="card-header bg-success"></div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <h1 class="m-0">0</h1>
+                    <i class="fa-regular fa-face-smile fa-3x ms-2 ml-1"></i>
+                </div>
+            </div>
+            <div class="col-3 card px-0 shadow">
+                <div class="card-header bg-warning"></div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <h1 class="m-0">0</h1>
+                    <i class="fa-regular fa-face-grimace fa-3x ms-2 ml-1"></i>
+                </div>
+            </div>
+            <div class="col-3 card px-0 shadow">
+                <div class="card-header bg-danger"></div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <h1 class="m-0">0</h1>
+                    <i class="fa-regular fa-face-dizzy fa-3x ms-2 ml-1"></i>
+                </div>
+            </div>
+            <div class="col-3 card px-0 shadow">
+                <div class="card-header bg-secondary"></div>
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <h1 class="m-0">1</h1>
+                    <i class="fa-regular fa-face-meh-blank fa-3x ms-2 ml-1"></i>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-5">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <p><strong>Map</strong></p>
+                    </div>
+                    <div class="card-body">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-5">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <p><strong>Carousel</strong></p>
+                    </div>
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
+        </div>  
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header"><p><Strong>Graphs</Strong></p></div>
+                    <div class="card-body"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <footer class="bg-dark text-white text-center py-3 mt-5 fixed-bottom">
+        <p>&copy; 2024 Your Company Name. All Rights Reserved.</p>
+    </footer>
+
+<script src="https://kit.fontawesome.com/6a12ba73c1.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    // Fetch data from the backend and populate sections
+    $(document).ready(function() {
+        $('#sidebarOpen').click(function() {
+            $('#sidebarMenu').toggleClass('show');
+            $('body').toggleClass('blur');
+        });
+
+        $('#sidebarClose').click(function() {
+            $('#sidebarMenu').toggleClass('show');
+            $('body').toggleClass('blur');
+        });
+    });
+
+
     async function fetchGPSData() {
         try {
             const response = await fetch('/gps');
             const data = await response.json();
 
-            displayData(data, 'locationData', 'gps', locationTemplate);
             SetMapWithMarker(data[0]);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -89,53 +174,34 @@
     // Modular displayData function
     function displayData(data, id, namespace, templateFn) {
         const podDataDiv = document.getElementById(id);
-        podDataDiv.innerHTML = ''; // Clear previous content
+        podDataDiv.innerHTML = ''; 
 
         data.forEach(item => {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add(namespace + '-item');
-            itemDiv.innerHTML = templateFn(item); // Use the template function to create the inner HTML
+            itemDiv.innerHTML = templateFn(item); 
             podDataDiv.appendChild(itemDiv);
         });
     }
 
-    // Template functions for different sections
-    function locationTemplate(item) {
-        return `
-            <p><strong>Latitude:</strong> ${item.Latitude}</p>
-            <p><strong>Longitude:</strong> ${item.Longitude}</p>
-            <p><strong>Altitude:</strong> ${item.Altitude}</p>
-        `;
-    }
-
-    function tempTemplate(item) {
-        return `
-            <p><strong>Temperature:</strong> ${item.Temperature} °C</p>
-        `;
-    }
-
-    function dtsTemplate(item) {
-        return `
-            <p><strong>DTS Value:</strong> ${item.PPM}</p>
-        `;
-    }
-
-    function phTemplate(item) {
-        return `
-            <p><strong>pH Value:</strong> ${item.PH}</p>
-        `;
-    }
-
     function SetMapWithMarker (GPSData){
+        if(GPSData){
+            const map = L.map('map').setView([GPSData.Latitude, GPSData.Longitude], 13);
 
-        const map = L.map('map').setView([GPSData.Latitude, GPSData.Longitude], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
-        
-        marker = L.marker([GPSData.Latitude, GPSData.Longitude]).addTo(map);
-        
+            marker = L.marker([GPSData.Latitude, GPSData.Longitude]).addTo(map);
+        }else{
+            const map = L.map('map').setView([48.3708, 14.5129], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            marker = L.marker([48.3708, 14.5129]).addTo(map);
+        }
     }
 
     function initializePage() {
