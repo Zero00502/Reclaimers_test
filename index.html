@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Data Display</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+<h1>MQTT Data Display</h1>
+
+<div id="locationData" class="data-box">
+    <h2>Location Data</h2>
+    <p id="latitude">Loading...</p>
+    <p id="longitude">Loading...</p>
+    <p id="altitude">Loading...</p>
+</div>
+<div id="TempData" class="data-box">
+    <h2>Location Data</h2>
+    <p id="latitude">Loading...</p>
+    <p id="longitude">Loading...</p>
+    <p id="altitude">Loading...</p>
+</div>
+<div id="DTSData" class="data-box">
+    <h2>Location Data</h2>
+    <p id="latitude">Loading...</p>
+    <p id="longitude">Loading...</p>
+    <p id="altitude">Loading...</p>
+</div>
+<div id="PHData" class="data-box">
+    <h2>Location Data</h2>
+    <p id="latitude">Loading...</p>
+    <p id="longitude">Loading...</p>
+    <p id="altitude">Loading...</p>
+</div>
+
+<div id="map"></div>
+
+<script>
+    // Fetch data from the backend and populate sections
+    async function fetchGPSData() {
+        try {
+            const response = await fetch('/gps');
+            const data = await response.json();
+
+            displayData(data, 'locationData', 'gps', locationTemplate);
+            SetMapWithMarker(data[0]);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchPHData() {
+        try {
+            const response = await fetch('/ph');
+            const data = await response.json();
+
+            displayData(data, 'PHData', 'ph', phTemplate);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchTempData() {
+        try {
+            const response = await fetch('/temp');
+            const data = await response.json();
+
+            displayData(data, 'TempData', 'temp', tempTemplate);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    async function fetchDTSData() {
+        try {
+            const response = await fetch('/dts');
+            const data = await response.json();
+
+            displayData(data, 'DTSData', 'dts', dtsTemplate);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    // Modular displayData function
+    function displayData(data, id, namespace, templateFn) {
+        const podDataDiv = document.getElementById(id);
+        podDataDiv.innerHTML = ''; // Clear previous content
+
+        data.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add(namespace + '-item');
+            itemDiv.innerHTML = templateFn(item); // Use the template function to create the inner HTML
+            podDataDiv.appendChild(itemDiv);
+        });
+    }
+
+    // Template functions for different sections
+    function locationTemplate(item) {
+        return `
+            <p><strong>Latitude:</strong> ${item.Latitude}</p>
+            <p><strong>Longitude:</strong> ${item.Longitude}</p>
+            <p><strong>Altitude:</strong> ${item.Altitude}</p>
+        `;
+    }
+
+    function tempTemplate(item) {
+        return `
+            <p><strong>Temperature:</strong> ${item.Temperature} °C</p>
+        `;
+    }
+
+    function dtsTemplate(item) {
+        return `
+            <p><strong>DTS Value:</strong> ${item.PPM}</p>
+        `;
+    }
+
+    function phTemplate(item) {
+        return `
+            <p><strong>pH Value:</strong> ${item.PH}</p>
+        `;
+    }
+
+    function SetMapWithMarker (GPSData){
+
+        const map = L.map('map').setView([GPSData.Latitude, GPSData.Longitude], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+        
+        marker = L.marker([GPSData.Latitude, GPSData.Longitude]).addTo(map);
+        
+    }
+
+    function initializePage() {
+        fetchGPSData();
+        fetchDTSData();
+        fetchTempData();
+        fetchPHData();
+
+        
+    }
+
+    // Fetch data on page load
+    window.onload = initializePage;
+</script>
+</body>
+</html>
